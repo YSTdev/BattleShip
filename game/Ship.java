@@ -10,12 +10,14 @@ import java.util.List;
 public class Ship {
     public List<Cell> shipCells;
     public String name;
+    public int shipSize;
 
     public Ship() {
     }
 
-    public Ship(List<Cell> shipCells, String name) {
+    public Ship(List<Cell> shipCells, String name, int shipSize) {
         this.shipCells = shipCells;
         this.name = name;
+        this.shipSize = shipSize;
     }
 }

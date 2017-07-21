@@ -53,7 +53,7 @@ public class MyGameBoard extends JPanel {
         if (Main.inGame) {
             for (int x = 0; x < GameController.BOARD_SIZE; x++)
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                    Cell cell = Main.myGameBoard.getCell(x, y);
+                    Cell cell = GameController.myGameBoard.getCell(x, y);
 
                     if (cell.ship!=null){
                         if (!cell.ship.shipCells.isEmpty()) {

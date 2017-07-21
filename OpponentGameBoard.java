@@ -12,11 +12,12 @@ import java.awt.event.MouseEvent;
 public class OpponentGameBoard extends JPanel {
 
 
-    private final int IMG_NUM = 4;
+    private final int IMG_NUM = 5;
     private final int EMPTY_CELL = 0;
     private final int CHECKED_CELL = 1;
     private final int KILLED_CELL = 2;
     private final int KILLED_SHIP_CELL = 3;
+    private final int MARKED_CELL = 4;
 
     private Image[] img;
 
@@ -39,7 +40,7 @@ public class OpponentGameBoard extends JPanel {
         if (Main.inGame) {
             for (int x = 0; x < GameController.BOARD_SIZE; x++)
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                    Cell cell = Main.opponentGameBoard.getCell(x, y);
+                    Cell cell = GameController.opponentGameBoard.getCell(x, y);
 
                     if (cell.checked){
                         if (cell.killed){
@@ -54,6 +55,10 @@ public class OpponentGameBoard extends JPanel {
                     }
                     else
                         g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+
+                    if (cell.marked)
+                        g.drawImage(img[MARKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+
 
                     /**
                     if (cell.killed)

@@ -14,6 +14,7 @@ public class Cell {
     public boolean must_be_free_cell = false;
     public boolean checked = false;
     public boolean killed = false;
+    public boolean marked = false;
 
     public Cell() {
     }

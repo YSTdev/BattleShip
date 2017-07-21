@@ -1,9 +1,6 @@
-import game.Cell;
-import game.GameBoard;
 import game.GameController;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,66 +10,82 @@ import java.awt.event.MouseEvent;
 public class GameSpaceUI extends JPanel {
     public static final int CELL_SIZE = 15;
     private JLabel statusbar;
-    GameBoard myBoard;
+    private OpponentGameBoard opponentGameBoard;
+    private MyGameBoard myGameBoard;
 
-   // private Image[] img;
+    // private Image[] img;
     //private JLabel label;
 
-    public GameSpaceUI(GameBoard myBoard,GameBoard opponentBoard, JLabel statusbar) {
+    public GameSpaceUI(JLabel statusbar) {
         //img = (new ImageIcon("D:\\BURN\\Учеба (МИЭМ)\\JavaLearn\\Project\\BattleShip\\src\\game\\2.jpg")).getImage();
 
-        addMouseListener(new CustomListener());
         this.statusbar = statusbar;
-        this.myBoard = myBoard;
         this.setLayout(null);
+
+        addMouseListener(new ShotListener());
+
         JLabel label1 = new JLabel("Opponent GameBoard");
         label1.setBounds(10, 10, 150, 15);
         add(label1);
 
-        OpponentGameBoard opponentGameBoard = new OpponentGameBoard();
-        opponentGameBoard.setBounds(10, 25, GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
+        opponentGameBoard = new OpponentGameBoard();
+        opponentGameBoard.setBounds(10, label1.getY()+label1.getHeight(), GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
         add(opponentGameBoard);
 
         JLabel label2 = new JLabel("My GameBoard");
-        label2.setBounds(10, GameController.BOARD_SIZE * CELL_SIZE + 25, 150, 15);
+        label2.setBounds(10, opponentGameBoard.getY() + opponentGameBoard.getHeight() + 5, 150, 15);
         add(label2);
 
-        MyGameBoard myGameBoard = new MyGameBoard();
-        myGameBoard.setBounds(10,  GameController.BOARD_SIZE * CELL_SIZE + 40, GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
+        myGameBoard = new MyGameBoard();
+        myGameBoard.setBounds(10, label2.getY() + label2.getHeight(), GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
         add(myGameBoard);
+
+        InfoBoard infoBoard = new InfoBoard();
+        infoBoard.setBounds(opponentGameBoard.getX() + opponentGameBoard.getWidth()+20, opponentGameBoard.getY(), 500, 500);
+        add(infoBoard);
     }
 
-    public class CustomListener extends MouseAdapter {
-        public void mousePressed (MouseEvent e) {
+    public class ShotListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
 
             int x = e.getX();
             int y = e.getY();
 
-            if (Main.shooting.killedShipsCount < GameController.MAX_SHIPS) {
+            if (Main.inGame) {
 
-                if ((x > 10) && ((x - 10) < GameController.BOARD_SIZE * GameSpaceUI.CELL_SIZE + 10) && (y > 25) && ((y - 25) < GameController.BOARD_SIZE * GameSpaceUI.CELL_SIZE )) {
-                    int cCol = (x - 10) / GameSpaceUI.CELL_SIZE;
-                    int cRow = (y - 25) / GameSpaceUI.CELL_SIZE;
+                if ((x > opponentGameBoard.getX()) && (x < opponentGameBoard.getX() + opponentGameBoard.getWidth()) && (y > opponentGameBoard.getY()) && (y < opponentGameBoard.getY() + opponentGameBoard.getWidth())) {
+                    int cCol = (x - opponentGameBoard.getX()) / GameSpaceUI.CELL_SIZE;
+                    int cRow = (y - opponentGameBoard.getY()) / GameSpaceUI.CELL_SIZE;
 
-                    Cell cell = Main.opponentGameBoard.getCell(cCol, cRow);
-
-                    if (cell.occupied) {
-                        cell.checked = true;
-                        cell.killed = true;
-                        cell.ship.shipCells.remove(cell);
-                        if (cell.ship.shipCells.isEmpty()){
-
+                    if (e.isMetaDown()) {
+                        System.out.print("Right click!");
+                        GameController.shooting.markCell(cCol, cRow);
+                    } else {
+                        //Выстрел игрока
+                        boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow);
+                        //Ответный выстрел по полю пользователя
+                        if (successfulShot) {
+                            GameController.shooting.makeShoot(GameController.myGameBoard);
+                            statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
                         }
-                    } else
-                        cell.checked = true;
-                    //Ответный выстрел по полю пользователя
-                    Main.shooting.makeShoot(Main.myGameBoard);
+                    }
+                }
+                repaint();
+
+                InfoBoard.changeLabels();
+
+                if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)) {
+                    statusbar.setText("End");
+
+                    String winner = GameController.endGame();
+                    //endGame("");
+                    JOptionPane.showMessageDialog(GameSpaceUI.this,
+                            winner,
+                            "End of game!",
+                            JOptionPane.WARNING_MESSAGE);
                 }
             }
-            if (Main.shooting.killedShipsCount == GameController.MAX_SHIPS) {
-                statusbar.setText("End");
-            }
-            repaint();
+
         }
     }
 

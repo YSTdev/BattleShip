@@ -1,7 +1,4 @@
-import game.Cell;
-import game.GameBoard;
 import game.GameController;
-import game.Shooting;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +7,20 @@ import java.awt.event.*;
 /**
  * Created by Zhenya on 22.04.2017.
  */
-public class Main extends JFrame{
+public class Main extends JFrame {
 
-    final private int MAX_HEIGHT = 500;
+    final private int MAX_HEIGHT = 450;
     final private int MAX_WIDTH = 300;
     private String level = "simple";
+    private String mode = "computer";
     private JLabel statusbar;
     private GameSpaceUI gameSpaceUI;
     public static boolean inGame = false;
-    static public GameBoard myGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
-    static public GameBoard opponentGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
-    static public Shooting shooting;
+
+    //static public Shooting shooting;
 
 
-    public Main(){
+    public Main() {
 
         initUI();
     }
@@ -32,86 +29,103 @@ public class Main extends JFrame{
         this.statusbar.setText(status);
     }
 
-    private void initUI(){
+    /**
+     * Инициализация графического интерфейса
+     * Создание строки меню, строки состояния и игрового пространства
+     */
+    private void initUI() {
 
         statusbar = new JLabel("Hello!");
 
-     //   JPanel MyGameBoard = new JPanel();
-     //   MyGameBoard.add(statusbar);
-     //   add(statusbar, BorderLayout.SOUTH);
-     //   add(new MyGameBoard(statusbar));
-      //  MyGameBoard.setLayout(new BorderLayout());
+        //Строка меню
         JMenuBar menuBar = new JMenuBar();
-        menuBar.add(createGameMenu());
+        //Элементы строки меню
+        menuBar.add(gameMenu());
         menuBar.add(optionsGameMenu());
-
-
-        JMenu editMenu = new JMenu("Edit");
-        menuBar.add(editMenu);
-        editMenu.addSeparator();
+        //JMenu aboutMenu = new JMenu("About");
+        menuBar.add(aboutMenu());
+        //about.addSeparator();
+        //добавление элементов на главный фрейм
         setJMenuBar(menuBar);
-
         this.setLayout(new BorderLayout());
-        gameSpaceUI = new GameSpaceUI(myGameBoard, opponentGameBoard, statusbar);
-        add(gameSpaceUI,BorderLayout.CENTER);
+        gameSpaceUI = new GameSpaceUI(statusbar);
+        add(gameSpaceUI, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
-
-
-
+        //настройка основного фрейма
         setTitle("BattleShip");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(MAX_WIDTH, MAX_HEIGHT);
-        //pack();
+        /**pack();*/
     }
 
-    private JMenu createGameMenu()
-    {
-        JMenu game = new JMenu("Game");                                              // Создание выпадающего меню
-        JMenuItem newgame = new JMenuItem("Start new game", new ImageIcon("")); // Пункт меню "Открыть" с изображением
-    //    JMenuItem endgame = new JMenuItem(new ExitAction());                            // Пункт меню из команды с выходом из программы
-        // Добавление к пункту меню изображения
-      //  exit.setIcon(new ImageIcon("images/exit.png"));
-        // Добавим в меню пункта open
+    private JMenuItem aboutMenu() {
+
+        JMenuItem about = new JMenuItem("About");
+        about.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg) {
+                System.out.print("About click!");
+
+                JOptionPane.showMessageDialog(Main.this,
+                        "Bla-bla",
+                        "About this game",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        return about;
+    }
+
+    /**
+     * Элемент меню "Create new game"
+     *
+     * @return
+     */
+    //TODO:добавить иконки
+    private JMenu gameMenu() {
+        // Создание выпадающего меню и пункта "Start new game"
+        JMenu game = new JMenu("Game");
+        JMenuItem newgame = new JMenuItem("Start new game", new ImageIcon(""));
+        JMenuItem endgame = new JMenuItem("Exit game");                            // Пункт меню из команды с выходом из программы
+        /**    // Добавление к пункту меню изображения
+         //  exit.setIcon(new ImageIcon("images/exit.png"));*/
+        // Добавление пунков меню "Start new game" и "Exit game"
         game.add(newgame);
+        game.add(endgame);
         // Добавление разделителя
-      //  game.addSeparator();
-      //  file.add(exit);
+        //  game.addSeparator();
+        //  file.add(exit);
 
         newgame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                System.out.println("ActionListener.actionPerformed : open");
+
                 GameController gameController = new GameController();
-
+                //Статус "In game"
                 statusbar.setText("In Game");
-                for (int i=0; i<100; i++) {
-                    myGameBoard = gameController.initGameBoard(myGameBoard);
-                    opponentGameBoard = gameController.initGameBoard(opponentGameBoard);
-                    if ((myGameBoard!=null)&&(opponentGameBoard!=null))
-                        break;
-                }
 
-                shooting = new Shooting(myGameBoard);
-                if (level == "simple") {
-                    shooting.simpleShooting();
-                }
-
-                if (level == "hard") {
-                    shooting.smartShooting(myGameBoard);
-                }
-
-            //    gameController.startGame(level, myGameBoard, shooting);
                 inGame = true;
+                InfoBoard.setLabels();
+
+                gameController.startGame(level, mode);
                 repaint();
             }
         });
 
+        //Закрытие окна при нажатии на пункт меню "Exit game"
+        endgame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                System.exit(0);
+            }
+        });
         return game;
     }
 
 
-    private JMenu optionsGameMenu(){
+    private JMenu optionsGameMenu() {
 
         JMenu options = new JMenu("Options");
         JRadioButtonMenuItem simple = new JRadioButtonMenuItem("Simple");
@@ -144,22 +158,12 @@ public class Main extends JFrame{
     }
 
 
-
-/**
-    Action exitAction = new AbstractAction("Exit"); // Пункт меню "Exit".
-
-        public void actionPerformed(ActionEvent event)
-        {// Фрагмент программы, обрабатывающий событие.
-            System.exit(0);
-        }
-
-*/
     public static void main(String[] args) {
-    /**
-        GameController gameController = new GameController();
+        /**
+         GameController gameController = new GameController();
 
-        gameController.startGame();
-*/
+         gameController.startGame();
+         */
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

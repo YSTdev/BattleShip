@@ -17,7 +17,7 @@ public class GameLogic {
         if (shipCells.isEmpty()) {
             throw new Exception("Can't place s ship!");
         }
-        gameBoard.placeShipOnBoard(shipCells, shipName);
+        gameBoard.placeShipOnBoard(shipCells, shipName, shipSize);
     }
 
     /**

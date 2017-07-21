@@ -12,97 +12,121 @@ import java.util.List;
  * @author Zhenya on 22.04.2017.
  */
 public class GameController {
-    public static final int MAX_SHIPS = 7;
+    public static final int MAX_SHIPS = 10;
     public static final int BOARD_SIZE = 10;
 
+    static public GameBoard myGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
+    static public GameBoard opponentGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
     private GameLogic gameLogic = new GameLogic();
-  //  private GameBoard gameBoard;
-   // private GameBoard myGameBoard;
-    private Shooting shooting;
-  //  private String level;
+    //  private GameBoard gameBoard;
+    // private GameBoard myGameBoard;
+    static public Shooting shooting;
+    private String level;
+    private String mode;
 
-    private List<Cell> list = new ArrayList<>();
+    // private List<Cell> list = new ArrayList<>();
 
-    public void startGame(String level, GameBoard gameBoard, Shooting shooting) {
+    public void startGame(String level, String mode) {
 
-   //     this.level = level;
-   //     this.gameBoard=gameBoard;
-   /**     this.gameBoard = new GameBoard(MAX_SHIPS, BOARD_SIZE);
+        this.mode = mode;
+        this.level = level;
 
-        for (int i = 0; i < 20; i++) {
-            this.gameBoard.clearGameBoard();
-            try {
-                // TODO : создание кораблей
-                System.out.println("1 ship-4");
-                this.gameLogic.createShip(this.gameBoard, 4, "D1");
-                System.out.println("2 ship-3");
-                this.gameLogic.createShip(this.gameBoard, 3, "C2");
-                System.out.println("3 ship-3");
-                this.gameLogic.createShip(this.gameBoard, 3, "C1");
-                System.out.println("4 ship-2");
-                this.gameLogic.createShip(this.gameBoard, 2, "B3");
-                System.out.println("5 ship-2");
-                this.gameLogic.createShip(this.gameBoard, 2, "B2");
-                System.out.println("6 ship-2");
-                this.gameLogic.createShip(this.gameBoard, 2, "B1");
-                System.out.println("7 ship-1");
-                this.gameLogic.createShip(this.gameBoard, 1, "A1");
+        if (mode == "computer") {
+            //Инициализация игровых полей
+            for (int i = 0; i < 100; i++) {
+                myGameBoard = initGameBoard(myGameBoard);
+                opponentGameBoard = initGameBoard(opponentGameBoard);
+                if ((myGameBoard != null) && (opponentGameBoard != null))
+                    break;
+            }
 
-                break;
-            } catch (Exception e) {
-                // Повторяем создание кораблей
-                System.out.println("Ooops. Number of attemptions: " + i);
+            //Создание стратегии стрельбы по уровню
+            shooting = new Shooting(myGameBoard);
+            if (level == "simple") {
+                shooting.simpleShooting();
+            }
+            if (level == "hard") {
+                shooting.smartShooting(myGameBoard);
             }
         }
-        if (this.gameBoard.getAllShips().size() != MAX_SHIPS) {
-            System.out.println("Nu, ne sud'ba :(");
-            return;
-        }
+        //     this.level = level;
+        //     this.gameBoard=gameBoard;
+        /**     this.gameBoard = new GameBoard(MAX_SHIPS, BOARD_SIZE);
 
-        System.out.println();
-        for (int y = 0; y < BOARD_SIZE; y++) {
-            for (int x = 0; x < BOARD_SIZE; x++) {
-                if (x == 0) {
-                    System.out.print(y + ":  ");
-                }
-                Cell cell = this.gameBoard.getCell(x, y);
-                System.out.print((cell.occupied ? cell.ship.name : (cell.must_be_free_cell ? "xx" : "~~")) + " ");
-            }
-            System.out.println();
-        }
-*/
-     //   this.shooting = new Shooting(this.gameBoard);
-       this.shooting = shooting;
+         for (int i = 0; i < 20; i++) {
+         this.gameBoard.clearGameBoard();
+         try {
+         // TODO : создание кораблей
+         System.out.println("1 ship-4");
+         this.gameLogic.createShip(this.gameBoard, 4, "D1");
+         System.out.println("2 ship-3");
+         this.gameLogic.createShip(this.gameBoard, 3, "C2");
+         System.out.println("3 ship-3");
+         this.gameLogic.createShip(this.gameBoard, 3, "C1");
+         System.out.println("4 ship-2");
+         this.gameLogic.createShip(this.gameBoard, 2, "B3");
+         System.out.println("5 ship-2");
+         this.gameLogic.createShip(this.gameBoard, 2, "B2");
+         System.out.println("6 ship-2");
+         this.gameLogic.createShip(this.gameBoard, 2, "B1");
+         System.out.println("7 ship-1");
+         this.gameLogic.createShip(this.gameBoard, 1, "A1");
+
+         break;
+         } catch (Exception e) {
+         // Повторяем создание кораблей
+         System.out.println("Ooops. Number of attemptions: " + i);
+         }
+         }
+         if (this.gameBoard.getAllShips().size() != MAX_SHIPS) {
+         System.out.println("Nu, ne sud'ba :(");
+         return;
+         }
+
+         System.out.println();
+         for (int y = 0; y < BOARD_SIZE; y++) {
+         for (int x = 0; x < BOARD_SIZE; x++) {
+         if (x == 0) {
+         System.out.print(y + ":  ");
+         }
+         Cell cell = this.gameBoard.getCell(x, y);
+         System.out.print((cell.occupied ? cell.ship.name : (cell.must_be_free_cell ? "xx" : "~~")) + " ");
+         }
+         System.out.println();
+         }
+         */
+        //   this.shooting = new Shooting(this.gameBoard);
+        this.shooting = shooting;
 /**        if (level == "simple") {
-            shooting.simpleShooting();
-        }
+ shooting.simpleShooting();
+ }
 
-        if (level == "hard") {
-            shooting.smartShooting(gameBoard);
-        }
-*/
-        for (int i = 0; i < 100; i++) {
-            if (shooting.killedShipsCount >= MAX_SHIPS) {
-                System.out.print("THE END");
-                break;
-            }
-            shooting.makeShoot(gameBoard);
+ if (level == "hard") {
+ shooting.smartShooting(gameBoard);
+ }
 
-            System.out.println();
-            System.out.println(i + 1);
-            for (int y = 0; y < BOARD_SIZE; y++) {
-                for (int x = 0; x < BOARD_SIZE; x++) {
-                    if (x == 0) {
-                        System.out.print(y + ":  ");
-                    }
-                    Cell cell = gameBoard.getCell(x, y);
-                    System.out.print((cell.killed ? "kk" : (cell.checked ? "oo" : "~~")) + " ");
-                }
-                System.out.println();
-            }
+ for (int i = 0; i < 100; i++) {
+ if (shooting.killedShipsCount >= MAX_SHIPS) {
+ System.out.print("THE END");
+ break;
+ }
+ shooting.makeShoot(gameBoard);
 
-        }
+ System.out.println();
+ System.out.println(i + 1);
+ for (int y = 0; y < BOARD_SIZE; y++) {
+ for (int x = 0; x < BOARD_SIZE; x++) {
+ if (x == 0) {
+ System.out.print(y + ":  ");
+ }
+ Cell cell = gameBoard.getCell(x, y);
+ System.out.print((cell.killed ? "kk" : (cell.checked ? "oo" : "~~")) + " ");
+ }
+ System.out.println();
+ }
 
+ }
+ */
         /**
          int i=0;
          for (Cell cell : shooting.getUncheckedCells()){
@@ -162,6 +186,12 @@ public class GameController {
                 System.out.println("6 ship-2");
                 this.gameLogic.createShip(gameBoard, 2, "B1");
                 System.out.println("7 ship-1");
+                this.gameLogic.createShip(gameBoard, 1, "A4");
+                System.out.println("8 ship-1");
+                this.gameLogic.createShip(gameBoard, 1, "A3");
+                System.out.println("9 ship-1");
+                this.gameLogic.createShip(gameBoard, 1, "A2");
+                System.out.println("10 ship-1");
                 this.gameLogic.createShip(gameBoard, 1, "A1");
 
                 break;
@@ -188,4 +218,13 @@ public class GameController {
         }
         return gameBoard;
     }
+
+    static public String endGame() {
+        String winner = "";
+        if (shooting.killedShipsCount == MAX_SHIPS)
+            winner = "You lost! Number of shots: " + shooting.shotCount;
+        else winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
+        return winner;
+    }
+
 }

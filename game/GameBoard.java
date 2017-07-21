@@ -56,8 +56,8 @@ public class GameBoard {
     /**
      * Создание и размещенмие корабля на игровом поле
      */
-    public Ship placeShipOnBoard(List<Cell> shipCells, String shipName) {
-        Ship ship = new Ship(shipCells, shipName);
+    public Ship placeShipOnBoard(List<Cell> shipCells, String shipName, int shipSize) {
+        Ship ship = new Ship(shipCells, shipName, shipSize);
 
         for (Cell cell : shipCells) {
             cell.occupied = true;

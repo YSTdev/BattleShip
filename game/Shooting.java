@@ -13,12 +13,23 @@ public class Shooting {
     private List<Cell> killingStrategy = new ArrayList<>(); // —тратеги€ по которой раненный корабль добиваетс€
     private List<Cell> killedCells = new ArrayList<>(); // ’ранит ссылки на €чейки, которые были "убиты" (обнул€етс€ после разгрома корабл€)
     private ArrayList<Integer> numbers;
+
     private Cell lastShot = null; //’ранит ссылку на €чейку, котора€ была ранена последней
     private Cell firstShot = null; // ’ранит ссылку на €чейку, котора€ была ранена первой
-    public int killedShipsCount = 0; // —четчит разбитых кораблей, дл€ определени€ конца игры
+    public int killedShipsCount = 0; // —четчик разбитых кораблей, дл€ определени€ конца игры
+    public int killedShipsCountUser = 0;
+    public int shotCount = 0;
+    public int[] shipsAlive;
+    //public int opponentCount = 0;
 
     public Shooting(GameBoard gameBoard) {
         this.unchecked_cells = new ArrayList<>(gameBoard.getBoardSize() * gameBoard.getBoardSize());
+
+        shipsAlive = new int[4];
+        shipsAlive[0]=4;
+        shipsAlive[1]=3;
+        shipsAlive[2]=2;
+        shipsAlive[3]=1;
 
         for (int y = 0; y < gameBoard.getBoardSize(); y++) {                // опируем все €чейки из gameBoard в непровернные
             for (int x = 0; x < gameBoard.getBoardSize(); x++) {            //ќдин раз в начале игры
@@ -307,6 +318,38 @@ public class Shooting {
                     }
                 }
             }
+        }
+    }
+
+    public boolean makeUserShot(int cCol, int cRow){
+
+        Cell cell = GameController.opponentGameBoard.getCell(cCol, cRow);
+        shotCount++;
+
+        if ((!cell.marked)&&(!cell.checked)) {
+            if (cell.occupied) {
+                cell.checked = true;
+                cell.killed = true;
+                cell.ship.shipCells.remove(cell);
+
+                if (cell.ship.shipCells.isEmpty()) {
+                    killedShipsCountUser++;
+                    shipsAlive[cell.ship.shipSize-1]--;
+                }
+            } else
+                cell.checked = true;
+            return true;
+        }
+        return false;
+    }
+
+    public void markCell(int cCol, int cRow){
+        Cell cell = GameController.opponentGameBoard.getCell(cCol,cRow);
+        if (!cell.checked){
+            if (!cell.marked)
+                cell.marked = true;
+            else
+                cell.marked = false;
         }
     }
 
