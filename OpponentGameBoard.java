@@ -3,8 +3,6 @@ import game.GameController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * Created by Zhenya on 31.05.2017.
@@ -40,7 +38,7 @@ public class OpponentGameBoard extends JPanel {
         if (Main.inGame) {
             for (int x = 0; x < GameController.BOARD_SIZE; x++)
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                    Cell cell = GameController.opponentGameBoard.getCell(x, y);
+                    Cell cell = GameController.secondPlayerBoard.getCell(x, y);
 
                     if (cell.checked){
                         if (cell.killed){

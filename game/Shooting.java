@@ -323,7 +323,7 @@ public class Shooting {
 
     public boolean makeUserShot(int cCol, int cRow){
 
-        Cell cell = GameController.opponentGameBoard.getCell(cCol, cRow);
+        Cell cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
         shotCount++;
 
         if ((!cell.marked)&&(!cell.checked)) {
@@ -344,7 +344,7 @@ public class Shooting {
     }
 
     public void markCell(int cCol, int cRow){
-        Cell cell = GameController.opponentGameBoard.getCell(cCol,cRow);
+        Cell cell = GameController.secondPlayerBoard.getCell(cCol,cRow);
         if (!cell.checked){
             if (!cell.marked)
                 cell.marked = true;

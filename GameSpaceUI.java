@@ -12,13 +12,16 @@ public class GameSpaceUI extends JPanel {
     private JLabel statusbar;
     private OpponentGameBoard opponentGameBoard;
     private MyGameBoard myGameBoard;
+    public InfoBoard infoBoard;
+    private String mode;
 
     // private Image[] img;
     //private JLabel label;
 
-    public GameSpaceUI(JLabel statusbar) {
+    public GameSpaceUI(JLabel statusbar, String mode) {
         //img = (new ImageIcon("D:\\BURN\\Учеба (МИЭМ)\\JavaLearn\\Project\\BattleShip\\src\\game\\2.jpg")).getImage();
 
+        this.mode = mode;
         this.statusbar = statusbar;
         this.setLayout(null);
 
@@ -29,7 +32,7 @@ public class GameSpaceUI extends JPanel {
         add(label1);
 
         opponentGameBoard = new OpponentGameBoard();
-        opponentGameBoard.setBounds(10, label1.getY()+label1.getHeight(), GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
+        opponentGameBoard.setBounds(10, label1.getY() + label1.getHeight(), GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
         add(opponentGameBoard);
 
         JLabel label2 = new JLabel("My GameBoard");
@@ -40,8 +43,8 @@ public class GameSpaceUI extends JPanel {
         myGameBoard.setBounds(10, label2.getY() + label2.getHeight(), GameController.BOARD_SIZE * CELL_SIZE, GameController.BOARD_SIZE * CELL_SIZE);
         add(myGameBoard);
 
-        InfoBoard infoBoard = new InfoBoard();
-        infoBoard.setBounds(opponentGameBoard.getX() + opponentGameBoard.getWidth()+20, opponentGameBoard.getY(), 500, 500);
+        infoBoard = new InfoBoard();
+        infoBoard.setBounds(opponentGameBoard.getX() + opponentGameBoard.getWidth() + 20, opponentGameBoard.getY(), 500, 500);
         add(infoBoard);
     }
 
@@ -64,17 +67,20 @@ public class GameSpaceUI extends JPanel {
                         //Выстрел игрока
                         boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow);
                         //Ответный выстрел по полю пользователя
-                        if (successfulShot) {
-                            GameController.shooting.makeShoot(GameController.myGameBoard);
+                        if (successfulShot && (mode == "computer")) {
+                            GameController.shooting.makeShoot(GameController.firstPlayerBoard);
                             statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
                         }
                     }
                 }
-                repaint();
+                opponentGameBoard.repaint();
+                myGameBoard.repaint();
 
-                InfoBoard.changeLabels();
+                infoBoard.changeLabels();
+                //InfoBoard.changeLabels();
 
-                if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)) {
+                if (GameController.endGame() != null){
+                //if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)) {
                     statusbar.setText("End");
 
                     String winner = GameController.endGame();
@@ -84,6 +90,7 @@ public class GameSpaceUI extends JPanel {
                             "End of game!",
                             JOptionPane.WARNING_MESSAGE);
                 }
+
             }
 
         }

@@ -1,10 +1,8 @@
 import game.Cell;
-import game.GameBoard;
 import game.GameController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 /**
  * Created by Zhenya on 26.05.2017.
@@ -26,7 +24,6 @@ public class MyGameBoard extends JPanel {
     public MyGameBoard() {
 
 
-    //    this.myBoard = Main.myGameBoard;
         img = new Image[IMG_NUM];
 
         for (int i = 0; i < IMG_NUM; i++) {
@@ -53,7 +50,7 @@ public class MyGameBoard extends JPanel {
         if (Main.inGame) {
             for (int x = 0; x < GameController.BOARD_SIZE; x++)
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                    Cell cell = GameController.myGameBoard.getCell(x, y);
+                    Cell cell = GameController.firstPlayerBoard.getCell(x, y);
 
                     if (cell.ship!=null){
                         if (!cell.ship.shipCells.isEmpty()) {

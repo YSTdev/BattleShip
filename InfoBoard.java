@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
  */
 public class InfoBoard extends JPanel {
     private Image img;
-    private static JLabel[] labels;
+    private JLabel[] labels;
 
     public InfoBoard() {
 
@@ -25,14 +25,14 @@ public class InfoBoard extends JPanel {
         setLabels();
     }
 
-    public static void setLabels() {
+    public  void setLabels() {
 
         for (int i = 0; i < 4; i++) {
             labels[i].setText((i + 1) + " x ");
         }
     }
 
-    public static void changeLabels(){
+    public  void changeLabels(){
 
         for (int i = 0; i < 4; i++) {
             labels[i].setText(GameController.shooting.shipsAlive[3 - i] + " x ");

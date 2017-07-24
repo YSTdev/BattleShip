@@ -1,10 +1,5 @@
 package game;
 
-import sun.applet.Main;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Отвечает за инициализацию игры, расположение кораблей,
  * обработку действий игрока.
@@ -15,11 +10,11 @@ public class GameController {
     public static final int MAX_SHIPS = 10;
     public static final int BOARD_SIZE = 10;
 
-    static public GameBoard myGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
-    static public GameBoard opponentGameBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
+    static public GameBoard firstPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
+    static public GameBoard secondPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
     private GameLogic gameLogic = new GameLogic();
     //  private GameBoard gameBoard;
-    // private GameBoard myGameBoard;
+    // private GameBoard firstPlayerBoard;
     static public Shooting shooting;
     private String level;
     private String mode;
@@ -34,19 +29,29 @@ public class GameController {
         if (mode == "computer") {
             //Инициализация игровых полей
             for (int i = 0; i < 100; i++) {
-                myGameBoard = initGameBoard(myGameBoard);
-                opponentGameBoard = initGameBoard(opponentGameBoard);
-                if ((myGameBoard != null) && (opponentGameBoard != null))
+                firstPlayerBoard = initGameBoard(firstPlayerBoard);
+                secondPlayerBoard = initGameBoard(secondPlayerBoard);
+                if ((firstPlayerBoard != null) && (secondPlayerBoard != null))
                     break;
             }
 
             //Создание стратегии стрельбы по уровню
-            shooting = new Shooting(myGameBoard);
+            shooting = new Shooting(firstPlayerBoard);
             if (level == "simple") {
                 shooting.simpleShooting();
             }
             if (level == "hard") {
-                shooting.smartShooting(myGameBoard);
+                shooting.smartShooting(firstPlayerBoard);
+            }
+        }
+
+        //TODO: начало сетевой игры
+        if (mode == "viaNet") {
+            for (int i = 0; i < 100; i++) {
+                firstPlayerBoard = initGameBoard(firstPlayerBoard);
+                secondPlayerBoard = initGameBoard(secondPlayerBoard);
+                if ((firstPlayerBoard != null) && (secondPlayerBoard != null))
+                    break;
             }
         }
         //     this.level = level;
@@ -221,10 +226,16 @@ public class GameController {
 
     static public String endGame() {
         String winner = "";
-        if (shooting.killedShipsCount == MAX_SHIPS)
+
+        if (shooting.killedShipsCount == MAX_SHIPS) {
             winner = "You lost! Number of shots: " + shooting.shotCount;
-        else winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
-        return winner;
+            return winner;
+        }
+        if (shooting.killedShipsCountUser == MAX_SHIPS) {
+            winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
+            return winner;
+        } else
+            return null;
     }
 
 }

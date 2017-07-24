@@ -48,7 +48,7 @@ public class Main extends JFrame {
         //добавление элементов на главный фрейм
         setJMenuBar(menuBar);
         this.setLayout(new BorderLayout());
-        gameSpaceUI = new GameSpaceUI(statusbar);
+        gameSpaceUI = new GameSpaceUI(statusbar, mode);
         add(gameSpaceUI, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
         //настройка основного фрейма
@@ -88,7 +88,7 @@ public class Main extends JFrame {
         // Создание выпадающего меню и пункта "Start new game"
         JMenu game = new JMenu("Game");
         JMenuItem newgame = new JMenuItem("Start new game", new ImageIcon(""));
-        JMenuItem endgame = new JMenuItem("Exit game");                            // Пункт меню из команды с выходом из программы
+        JMenuItem endgame = new JMenuItem("Exit game");                            // Пункт меню "выход из программы"
         /**    // Добавление к пункту меню изображения
          //  exit.setIcon(new ImageIcon("images/exit.png"));*/
         // Добавление пунков меню "Start new game" и "Exit game"
@@ -107,10 +107,12 @@ public class Main extends JFrame {
                 statusbar.setText("In Game");
 
                 inGame = true;
-                InfoBoard.setLabels();
+
+                //InfoBoard.setLabels();
+                gameSpaceUI.infoBoard.setLabels();
 
                 gameController.startGame(level, mode);
-                repaint();
+                gameSpaceUI.repaint();
             }
         });
 
@@ -128,6 +130,8 @@ public class Main extends JFrame {
     private JMenu optionsGameMenu() {
 
         JMenu options = new JMenu("Options");
+
+        JMenu hardness = new JMenu("Hardness");
         JRadioButtonMenuItem simple = new JRadioButtonMenuItem("Simple");
         JRadioButtonMenuItem hard = new JRadioButtonMenuItem("Hard");
         simple.setSelected(true);
@@ -135,8 +139,27 @@ public class Main extends JFrame {
         ButtonGroup levelgroup = new ButtonGroup();
         levelgroup.add(simple);
         levelgroup.add(hard);
-        options.add(simple);
-        options.add(hard);
+        hardness.add(simple);
+        hardness.add(hard);
+
+        options.add(hardness);
+
+        //options.addSeparator();
+
+        JMenu mode = new JMenu("Mode");
+        JRadioButtonMenuItem computer = new JRadioButtonMenuItem("Single player");
+        JRadioButtonMenuItem viaNet = new JRadioButtonMenuItem("Two players");
+        computer.setSelected(true);
+
+        ButtonGroup modegroup = new ButtonGroup();
+        modegroup.add(computer);
+        modegroup.add(viaNet);
+        mode.add(computer);
+        mode.add(viaNet);
+
+        options.add(mode);
+
+
 
         simple.addItemListener(new ItemListener() {
             @Override
@@ -153,17 +176,19 @@ public class Main extends JFrame {
 
         });
 
+        viaNet.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                //TODO: новая форма для создания сетевой игры
+            }
+        });
+
         return options;
 
     }
 
 
     public static void main(String[] args) {
-        /**
-         GameController gameController = new GameController();
-
-         gameController.startGame();
-         */
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
