@@ -2,6 +2,7 @@ import game.GameController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 
 /**
@@ -15,7 +16,9 @@ public class Main extends JFrame {
     private String mode = "computer";
     private JLabel statusbar;
     private GameSpaceUI gameSpaceUI;
+    private NetModeFrame netModeFrame;
     public static boolean inGame = false;
+    public GameController gameController;
 
     //static public Shooting shooting;
 
@@ -48,7 +51,7 @@ public class Main extends JFrame {
         //добавление элементов на главный фрейм
         setJMenuBar(menuBar);
         this.setLayout(new BorderLayout());
-        gameSpaceUI = new GameSpaceUI(statusbar, mode);
+        gameSpaceUI = new GameSpaceUI(statusbar, mode, netModeFrame.getStatus());
         add(gameSpaceUI, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
         //настройка основного фрейма
@@ -102,7 +105,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
 
-                GameController gameController = new GameController();
+                gameController = new GameController();
                 //Статус "In game"
                 statusbar.setText("In Game");
 
@@ -111,7 +114,7 @@ public class Main extends JFrame {
                 //InfoBoard.setLabels();
                 gameSpaceUI.infoBoard.setLabels();
 
-                gameController.startGame(level, mode);
+                gameController.startGame(level, mode, netModeFrame.getStatus());
                 gameSpaceUI.repaint();
             }
         });
@@ -161,30 +164,41 @@ public class Main extends JFrame {
 
 
 
-        simple.addItemListener(new ItemListener() {
+        simple.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
+            public void actionPerformed(ActionEvent event) {
                 level = "simple";
+                System.out.println("simple mode");
             }
         });
 
-        hard.addItemListener(new ItemListener() {
+        hard.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
+            public void actionPerformed(ActionEvent event) {
                 level = "hard";
+                System.out.println("hard mode");
             }
 
         });
 
-        viaNet.addItemListener(new ItemListener() {
+        computer.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
+            public void actionPerformed(ActionEvent event) {
+                System.out.println("computer mode");
+
+            }
+        });
+
+        viaNet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
                 //TODO: новая форма для создания сетевой игры
+                netModeFrame = new NetModeFrame();
+                netModeFrame.setVisible(true);
             }
         });
 
         return options;
-
     }
 
 

@@ -1,5 +1,6 @@
 import game.Cell;
 import game.GameController;
+import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,12 +11,13 @@ import java.awt.*;
 public class OpponentGameBoard extends JPanel {
 
 
-    private final int IMG_NUM = 5;
+    private final int IMG_NUM = 6;
     private final int EMPTY_CELL = 0;
     private final int CHECKED_CELL = 1;
     private final int KILLED_CELL = 2;
     private final int KILLED_SHIP_CELL = 3;
-    private final int MARKED_CELL = 4;
+    private final int SHIP_CELL = 4;
+    private final int MARKED_CELL = 5;
 
     private Image[] img;
 
@@ -36,9 +38,9 @@ public class OpponentGameBoard extends JPanel {
         super.paintComponent(g);
 
         if (Main.inGame) {
-            for (int x = 0; x < GameController.BOARD_SIZE; x++)
-                for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                    Cell cell = GameController.secondPlayerBoard.getCell(x, y);
+            for (int x = 0; x < Player.opponentGameBoard.getBoardSize(); x++)
+                for (int y = 0; y < Player.opponentGameBoard.getBoardSize(); y++) {
+                    Cell cell = Player.opponentGameBoard.getCell(x, y);
 
                     if (cell.checked){
                         if (cell.killed){

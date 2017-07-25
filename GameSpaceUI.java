@@ -14,15 +14,17 @@ public class GameSpaceUI extends JPanel {
     private MyGameBoard myGameBoard;
     public InfoBoard infoBoard;
     private String mode;
+    private String status;
 
     // private Image[] img;
     //private JLabel label;
 
-    public GameSpaceUI(JLabel statusbar, String mode) {
+    public GameSpaceUI(JLabel statusbar, String mode, String status) {
         //img = (new ImageIcon("D:\\BURN\\Учеба (МИЭМ)\\JavaLearn\\Project\\BattleShip\\src\\game\\2.jpg")).getImage();
 
         this.mode = mode;
         this.statusbar = statusbar;
+        this.status = status;
         this.setLayout(null);
 
         addMouseListener(new ShotListener());
@@ -61,15 +63,29 @@ public class GameSpaceUI extends JPanel {
                     int cRow = (y - opponentGameBoard.getY()) / GameSpaceUI.CELL_SIZE;
 
                     if (e.isMetaDown()) {
-                        System.out.print("Right click!");
-                        GameController.shooting.markCell(cCol, cRow);
+                        //System.out.print("Right click!");
+                        if ((mode == "computer")) {
+                            GameController.shooting.markCell(cCol, cRow);
+                        }
                     } else {
                         //Выстрел игрока
-                        boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow);
-                        //Ответный выстрел по полю пользователя
-                        if (successfulShot && (mode == "computer")) {
-                            GameController.shooting.makeShoot(GameController.firstPlayerBoard);
-                            statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                        if ((mode == "computer")) {
+                            boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow);
+                            //Ответный выстрел по полю пользователя
+                            if (successfulShot) {
+                                GameController.shooting.makeShoot(GameController.firstPlayerBoard);
+                                statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                            }
+                        }
+                        if ((mode == "viaNet")) {
+                            if (status=="server"){
+
+                            }
+
+                            if (status == "client"){
+
+                            }
+
                         }
                     }
                 }

@@ -80,4 +80,26 @@ public class GameBoard {
         this.ships.add(ship);
         return ship;
     }
+
+    public String makeBoardData(GameBoard gameBoard) {
+        String boardData = new String("");
+
+        for (Cell cell : cells) {
+            if (cell.occupied) {
+                boardData += "4";
+            } else boardData += "0";
+        }
+        return boardData;
+    }
+
+    public String changeBoardData(String boardData) {
+
+
+        for (Cell cell : cells) {
+            if (cell.occupied) {
+                boardData += "4";
+            } else boardData += "0";
+        }
+        return boardData;
+    }
 }

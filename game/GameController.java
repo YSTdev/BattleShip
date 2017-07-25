@@ -1,5 +1,7 @@
 package game;
 
+import game.Player;
+
 /**
  * Отвечает за инициализацию игры, расположение кораблей,
  * обработку действий игрока.
@@ -12,21 +14,28 @@ public class GameController {
 
     static public GameBoard firstPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
     static public GameBoard secondPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
+
+    public Player firstPlayer;
+    public Player secondPlayer;
+
     private GameLogic gameLogic = new GameLogic();
     //  private GameBoard gameBoard;
     // private GameBoard firstPlayerBoard;
     static public Shooting shooting;
     private String level;
     private String mode;
+    private String status;
 
     // private List<Cell> list = new ArrayList<>();
 
-    public void startGame(String level, String mode) {
+    public void startGame(String level, String mode, String status) {
 
         this.mode = mode;
         this.level = level;
+        this.status = status;
 
         if (mode == "computer") {
+
             //Инициализация игровых полей
             for (int i = 0; i < 100; i++) {
                 firstPlayerBoard = initGameBoard(firstPlayerBoard);
@@ -34,6 +43,8 @@ public class GameController {
                 if ((firstPlayerBoard != null) && (secondPlayerBoard != null))
                     break;
             }
+
+            firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
 
             //Создание стратегии стрельбы по уровню
             shooting = new Shooting(firstPlayerBoard);
@@ -47,11 +58,22 @@ public class GameController {
 
         //TODO: начало сетевой игры
         if (mode == "viaNet") {
-            for (int i = 0; i < 100; i++) {
-                firstPlayerBoard = initGameBoard(firstPlayerBoard);
-                secondPlayerBoard = initGameBoard(secondPlayerBoard);
-                if ((firstPlayerBoard != null) && (secondPlayerBoard != null))
-                    break;
+
+            if (status == "server"){
+                for (int i = 0; i < 100; i++) {
+                    firstPlayerBoard = initGameBoard(firstPlayerBoard);
+                    secondPlayerBoard = initGameBoard(secondPlayerBoard);
+                    if ((firstPlayerBoard != null) && (secondPlayerBoard != null))
+                        break;
+                }
+
+                firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
+                secondPlayer = new Player(secondPlayerBoard, firstPlayerBoard);
+
+            }
+
+            if (status == "client"){
+
             }
         }
         //     this.level = level;
