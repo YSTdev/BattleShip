@@ -1,4 +1,3 @@
-import game.GameController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +11,12 @@ public class Main extends JFrame {
 
     final private int MAX_HEIGHT = 450;
     final private int MAX_WIDTH = 300;
-    private String level = "simple";
-    private String mode = "computer";
+    //private String level = "simple";
+    //private String mode = "computer";
     private JLabel statusbar;
-    private GameSpaceUI gameSpaceUI;
+    public static GameSpaceUI gameSpaceUI;
     private NetModeFrame netModeFrame;
-    public static boolean inGame = false;
+    //public static boolean inGame = false;
     public GameController gameController;
 
     //static public Shooting shooting;
@@ -51,7 +50,7 @@ public class Main extends JFrame {
         //добавление элементов на главный фрейм
         setJMenuBar(menuBar);
         this.setLayout(new BorderLayout());
-        gameSpaceUI = new GameSpaceUI(statusbar, mode, netModeFrame.getStatus());
+        gameSpaceUI = new GameSpaceUI(statusbar);
         add(gameSpaceUI, BorderLayout.CENTER);
         add(statusbar, BorderLayout.SOUTH);
         //настройка основного фрейма
@@ -105,17 +104,21 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
 
-                gameController = new GameController();
+                gameController = new GameController(gameSpaceUI);
                 //Статус "In game"
                 statusbar.setText("In Game");
 
-                inGame = true;
+                gameController.inGame = true;
 
                 //InfoBoard.setLabels();
                 gameSpaceUI.infoBoard.setLabels();
 
-                gameController.startGame(level, mode, netModeFrame.getStatus());
+
+                //mode = NetModeFrame.mode;
+                gameController.startGame(GameController.level, GameController.mode, GameController.status);
                 gameSpaceUI.repaint();
+
+                //gameController.addListener(gameSpaceUI);
             }
         });
 
@@ -149,7 +152,7 @@ public class Main extends JFrame {
 
         //options.addSeparator();
 
-        JMenu mode = new JMenu("Mode");
+        JMenu gameMode = new JMenu("Mode");
         JRadioButtonMenuItem computer = new JRadioButtonMenuItem("Single player");
         JRadioButtonMenuItem viaNet = new JRadioButtonMenuItem("Two players");
         computer.setSelected(true);
@@ -157,17 +160,16 @@ public class Main extends JFrame {
         ButtonGroup modegroup = new ButtonGroup();
         modegroup.add(computer);
         modegroup.add(viaNet);
-        mode.add(computer);
-        mode.add(viaNet);
+        gameMode.add(computer);
+        gameMode.add(viaNet);
 
-        options.add(mode);
-
+        options.add(gameMode);
 
 
         simple.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                level = "simple";
+                GameController.level = "simple";
                 System.out.println("simple mode");
             }
         });
@@ -175,7 +177,7 @@ public class Main extends JFrame {
         hard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                level = "hard";
+                GameController.level = "hard";
                 System.out.println("hard mode");
             }
 

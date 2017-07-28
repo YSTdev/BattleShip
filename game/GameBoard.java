@@ -1,5 +1,7 @@
-package game;
 
+import com.sun.org.apache.xpath.internal.operations.*;
+
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,25 +83,113 @@ public class GameBoard {
         return ship;
     }
 
-    public String makeBoardData(GameBoard gameBoard) {
+    public static String makeMyBoardData(GameBoard gameBoard) {
         String boardData = new String("");
+        Cell cell;
 
-        for (Cell cell : cells) {
-            if (cell.occupied) {
-                boardData += "4";
-            } else boardData += "0";
+        for (int x = 0; x < GameController.BOARD_SIZE; x++) {
+            for (int y = 0; y < GameController.BOARD_SIZE; y++) {
+                cell = gameBoard.getCell(x, y);
+                if (cell.ship != null) {
+                    if (!cell.ship.shipCells.isEmpty()) {
+                        if (cell.killed)
+                            boardData += "k";
+                        else if (cell.occupied)
+                            boardData += "s";
+                    } else
+                        boardData += "d";
+                } else {
+                    if (cell.checked)
+                        boardData += "c";
+                    else
+                        boardData += "e";
+                }
+            }
         }
         return boardData;
     }
 
-    public String changeBoardData(String boardData) {
-
-
-        for (Cell cell : cells) {
-            if (cell.occupied) {
-                boardData += "4";
-            } else boardData += "0";
+    public static String makeOpBoardData() {
+        String boardData = new String("");
+        for (int x = 0; x < GameController.BOARD_SIZE; x++) {
+            for (int y = 0; y < GameController.BOARD_SIZE; y++) {
+                boardData += "e";
+            }
         }
+
+/**
+ for (int x = 0; x < GameController.BOARD_SIZE; x++) {
+ for (int y = 0; y < GameController.BOARD_SIZE; y++) {
+ cell = gameBoard.getCell(x, y);
+
+ if (cell.checked) {
+ if (cell.killed) {
+ if (!cell.ship.shipCells.isEmpty()) {
+ boardData += "k";
+ } else
+ boardData += "d";
+ } else
+ boardData += "c";
+ } else
+ boardData +="e";
+
+ if (cell.marked)
+ boardData += "m";
+ }
+ }
+ */
+        return boardData;
+    }
+
+    public static String changeBoardData(GameBoard gameBoard) {
+
+        String boardData = new String("");
+        Cell cell;
+
+        for (int x = 0; x < GameController.BOARD_SIZE; x++) {
+            for (int y = 0; y < GameController.BOARD_SIZE; y++) {
+                cell = gameBoard.getCell(x, y);
+
+
+                if (cell.checked){
+                    if (cell.killed){
+                        if (!cell.ship.shipCells.isEmpty()){
+                            boardData +="k";
+                        }
+                        else
+                            boardData +="d";
+                    }
+                    else
+                        boardData +="c";
+                }
+                else
+                    boardData +="e";
+
+                if (cell.marked)
+                    boardData +="m";
+
+
+/**
+ String boardData;
+ Cell cell;
+ cell = gameBoard.getCell(cCol, cRow);
+
+ if (cell.checked) {
+ if (cell.killed) {
+ if (!cell.ship.shipCells.isEmpty()) {
+ boardData = Data.substring(0,cRow * GameController.BOARD_SIZE + cCol)+ 'k'+ Data.substring(cRow * GameController.BOARD_SIZE + cCol + 1);
+ } else
+ boardData = Data.substring(0,cRow * GameController.BOARD_SIZE + cCol)+ 'd'+ Data.substring(cRow * GameController.BOARD_SIZE + cCol + 1);
+ } else
+ boardData = Data.substring(0,cRow * GameController.BOARD_SIZE + cCol)+ 'c'+ Data.substring(cRow * GameController.BOARD_SIZE + cCol + 1);
+ } else
+ boardData = Data.substring(0,cRow * GameController.BOARD_SIZE + cCol)+ 'e'+ Data.substring(cRow * GameController.BOARD_SIZE + cCol + 1);
+
+ if (cell.marked)
+ boardData = Data.substring(0,cRow * GameController.BOARD_SIZE + cCol)+ 'm'+ Data.substring(cRow * GameController.BOARD_SIZE + cCol + 1);*/
+            }
+        }
+        System.out.println(boardData);
         return boardData;
     }
 }

@@ -1,6 +1,5 @@
-package game;
-
-import game.Player;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Отвечает за инициализацию игры, расположение кораблей,
@@ -15,18 +14,66 @@ public class GameController {
     static public GameBoard firstPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
     static public GameBoard secondPlayerBoard = new GameBoard(GameController.MAX_SHIPS, GameController.BOARD_SIZE);
 
+    static public String myBoardData;
+    static public String opBoardData;
+
     public Player firstPlayer;
     public Player secondPlayer;
 
-    private GameLogic gameLogic = new GameLogic();
     //  private GameBoard gameBoard;
     // private GameBoard firstPlayerBoard;
     static public Shooting shooting;
-    private String level;
-    private String mode;
-    private String status;
+    public static GameServer gameServer;
+    public static GameClient gameClient;
 
+    public static String level;
+    public static String mode;
+    public static String status;
+    public static String queue = "first";
+    public static String winner = "";
+    public static boolean inGame = false;
+
+    private GameLogic gameLogic = new GameLogic();
+/**
     // private List<Cell> list = new ArrayList<>();
+    private List<EndGameListener> listeners = new ArrayList<EndGameListener>();
+
+    public void addListener(EndGameListener toAdd) {
+        listeners.add(toAdd);
+    }
+
+
+    public boolean checkEndGame(){
+        if (shooting.killedShipsCount == MAX_SHIPS) {
+            winner = "You lost! Number of shots: " + shooting.shotCount;
+            endGame();
+            return true;
+        }
+        if (shooting.killedShipsCountUser == MAX_SHIPS) {
+            winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
+            endGame();
+            return true;
+        }
+        return false;
+    }
+
+    public void endGame() {
+        System.out.println("End Game!!!");
+
+        if (status == "server") {
+            gameServer.sendData("E" + winner);
+        }
+        // Notify everybody that may be interested.
+        for (EndGameListener hl : listeners)
+            hl.endGame();
+    }
+
+    public GameController(){
+        this.addListener(gameClient);
+    }
+*/
+    public GameController(GameSpaceUI gameSpaceUI){
+    }
 
     public void startGame(String level, String mode, String status) {
 
@@ -34,8 +81,9 @@ public class GameController {
         this.level = level;
         this.status = status;
 
-        if (mode == "computer") {
+        if (this.mode == "computer") {
 
+            System.out.println("computer mode");
             //Инициализация игровых полей
             for (int i = 0; i < 100; i++) {
                 firstPlayerBoard = initGameBoard(firstPlayerBoard);
@@ -44,7 +92,9 @@ public class GameController {
                     break;
             }
 
-            firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
+            myBoardData = GameBoard.makeMyBoardData(firstPlayerBoard);
+            opBoardData = GameBoard.makeOpBoardData();
+            //firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
 
             //Создание стратегии стрельбы по уровню
             shooting = new Shooting(firstPlayerBoard);
@@ -57,9 +107,12 @@ public class GameController {
         }
 
         //TODO: начало сетевой игры
-        if (mode == "viaNet") {
+        if (this.mode == "viaNet") {
+            shooting = new Shooting(firstPlayerBoard);
+            System.out.println("viaNet mode");
 
-            if (status == "server"){
+            if (this.status == "server") {
+                System.out.println("viaNet server mode");
                 for (int i = 0; i < 100; i++) {
                     firstPlayerBoard = initGameBoard(firstPlayerBoard);
                     secondPlayerBoard = initGameBoard(secondPlayerBoard);
@@ -67,13 +120,23 @@ public class GameController {
                         break;
                 }
 
-                firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
-                secondPlayer = new Player(secondPlayerBoard, firstPlayerBoard);
+                myBoardData = GameBoard.makeMyBoardData(firstPlayerBoard);
+                opBoardData = GameBoard.makeOpBoardData();
 
+                gameServer.sendData('M' + GameBoard.makeMyBoardData(secondPlayerBoard));
+                gameServer.sendData('O' + GameBoard.makeOpBoardData());
+                //firstPlayer = new Player(firstPlayerBoard, secondPlayerBoard);
+                //secondPlayer = new Player(secondPlayerBoard, firstPlayerBoard);
             }
 
-            if (status == "client"){
+            if (status == "client") {/**
+             System.out.println("starting client");
+             //gameClient = new GameClient();
+             gameClient.setUpNetworking();
+             //   gameClient.go();
 
+             System.out.println("\n continue ...");*/
+                gameClient.sendData("Receiving data ...");
             }
         }
         //     this.level = level;
@@ -245,19 +308,20 @@ public class GameController {
         }
         return gameBoard;
     }
-
-    static public String endGame() {
-        String winner = "";
+/**
+    static public void endGame() {
 
         if (shooting.killedShipsCount == MAX_SHIPS) {
             winner = "You lost! Number of shots: " + shooting.shotCount;
-            return winner;
         }
         if (shooting.killedShipsCountUser == MAX_SHIPS) {
             winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
-            return winner;
-        } else
-            return null;
-    }
+        }
 
+        if (status == "server") {
+            gameServer.sendData("E" + winner);
+        }
+
+    }
+*/
 }

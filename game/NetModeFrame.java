@@ -1,5 +1,10 @@
+//import game.GameClient;
+//import game.GameController;
+//import game.GameServer;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 
 /**
@@ -9,19 +14,16 @@ public class NetModeFrame extends JFrame {
 
     final private int MAX_HEIGHT = 100;
     final private int MAX_WIDTH = 200;
-    private String status="server";
+    //public static String status="server";
+    //public static String mode = "computer";
     private String address = "";
     JTextField addressfield;
 
-    public NetModeFrame(){
+    public NetModeFrame() {
         init();
     }
 
-    public String getStatus(){
-        return status;
-    }
-
-    private void init(){
+    private void init() {
 
         addressfield = new JTextField();
         add(addressfield, BorderLayout.NORTH);
@@ -33,27 +35,40 @@ public class NetModeFrame extends JFrame {
         setSize(MAX_WIDTH, MAX_HEIGHT);
     }
 
-    private JButton serverButton (){
-        JButton serverButton = new JButton();
+    private JButton serverButton() {
+        JButton serverButton = new JButton("server");
         serverButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                status = "server";
+                GameController.status = "server";
+                GameController.mode = "viaNet";
                 System.out.println("Server button clicked!");
+
+                System.out.println("starting server");
+                GameController.gameServer = new GameServer();
+                GameController.gameServer.go();
             }
         });
 
         return serverButton;
     }
 
-    private JButton clientButton (){
-        JButton clientButton = new JButton();
+    private JButton clientButton() {
+        JButton clientButton = new JButton("client");
         clientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 address = addressfield.getText();
-                status = "client";
+                GameController.status = "client";
+                GameController.mode = "viaNet";
                 System.out.println("Client button clicked!");
+
+                System.out.println("starting client");
+                GameController.gameClient = new GameClient();
+                GameController.gameClient.setUpNetworking(address);
+                //   gameClient.go();
+
+                System.out.println("\n continue ...");
             }
         });
         return clientButton;

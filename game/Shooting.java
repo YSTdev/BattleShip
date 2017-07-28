@@ -1,5 +1,3 @@
-package game;
-
 import java.util.*;
 
 /**
@@ -20,6 +18,7 @@ public class Shooting {
     public int killedShipsCountUser = 0;
     public int shotCount = 0;
     public int[] shipsAlive;
+    public int[] opShipsAlive;
     //public int opponentCount = 0;
 
     public Shooting(GameBoard gameBoard) {
@@ -30,6 +29,13 @@ public class Shooting {
         shipsAlive[1]=3;
         shipsAlive[2]=2;
         shipsAlive[3]=1;
+
+        opShipsAlive = new int[4];
+        opShipsAlive[0]=4;
+        opShipsAlive[1]=3;
+        opShipsAlive[2]=2;
+        opShipsAlive[3]=1;
+
 
         for (int y = 0; y < gameBoard.getBoardSize(); y++) {                //Копируем все ячейки из gameBoard в непровернные
             for (int x = 0; x < gameBoard.getBoardSize(); x++) {            //Один раз в начале игры
@@ -321,9 +327,16 @@ public class Shooting {
         }
     }
 
-    public boolean makeUserShot(int cCol, int cRow){
+    public boolean makeUserShot(int cCol, int cRow, String queue){
 
-        Cell cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
+        Cell cell = new Cell();
+
+        if (queue == "first"){
+            cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
+        }
+        if (queue == "second"){
+            cell = GameController.firstPlayerBoard.getCell(cCol, cRow);
+        }
         shotCount++;
 
         if ((!cell.marked)&&(!cell.checked)) {
@@ -333,8 +346,18 @@ public class Shooting {
                 cell.ship.shipCells.remove(cell);
 
                 if (cell.ship.shipCells.isEmpty()) {
-                    killedShipsCountUser++;
-                    shipsAlive[cell.ship.shipSize-1]--;
+
+
+                        if (queue =="first"){
+                            killedShipsCountUser++;
+                            System.out.println(killedShipsCountUser);
+                            shipsAlive[cell.ship.shipSize-1]--;
+                        }
+                        if (queue == "second"){
+                            killedShipsCount++;
+                            System.out.println(killedShipsCount);
+                            opShipsAlive[cell.ship.shipSize-1]--;
+                        }
                 }
             } else
                 cell.checked = true;
@@ -352,6 +375,5 @@ public class Shooting {
                 cell.marked = false;
         }
     }
-
 
 }
