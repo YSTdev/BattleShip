@@ -21,14 +21,12 @@ public class GameController {
     public Player firstPlayer;
     public Player secondPlayer;
 
-    //  private GameBoard gameBoard;
-    // private GameBoard firstPlayerBoard;
     static public Shooting shooting;
     public static GameServer gameServer;
     public static GameClient gameClient;
 
-    public static String level;
-    public static String mode;
+    public static String level = "simple";
+    public static String mode = "computer";
     public static String status = "server";
     public static String queue = "first";
     public static String winner = "";
@@ -317,38 +315,52 @@ public class GameController {
 
     static public String endGame() {
 
+        System.out.println("Finish!!!");
         String message = new String();
 
-        if (status.equals("server")) {
-            System.out.println("In server option");
-            if (winner.isEmpty()) {
-                message = "Game was stopped!";
-            } else {
-                gameServer.sendData("E" + winner);
-                if (winner.equals("first")) {
-                    message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
+        if (mode.equals("computer")) {
+            if (winner.equals("first")) {
+                message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
+            }
+            if (winner.equals("second")) {
+                message = "You lost! Number of shots: " + shooting.shotCount;
+            }
+        }
+
+
+        if (mode.equals("viaNet")) {
+            if (status.equals("server")) {
+                System.out.println("In server option");
+                if (winner.isEmpty()) {
+                    message = "Game was stopped!";
+                } else {
+                    gameServer.sendData("E" + winner);
+                    if (winner.equals("first")) {
+                        message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
+                    }
+                    if (winner.equals("second")) {
+                        message = "You lost! Number of shots: " + shooting.shotCount;
+                    }
                 }
-                if (winner.equals("second")) {
-                    message = "You lost! Number of shots: " + shooting.shotCount;
+            }
+
+            if (status.equals("client")) {
+
+                if (winner.isEmpty()) {
+                    message = "Game was stopped!";
+                } else {
+                    if (winner.equals("second")) {
+                        System.out.println("second player");
+                        message = "Congratulations! You won!" + " Number of shots: ";// + shooting.shotCount;
+                    }
+                    if (winner.equals("first")) {
+                        System.out.println("first player");
+                        message = "You lost! Number of shots: ";// + shooting.shotCount;
+                    }
                 }
             }
         }
 
-        if (status.equals("client")) {
-
-            if (winner.isEmpty()) {
-                message = "Game was stopped!";
-            } else {
-                if (winner.equals("second")) {
-                    System.out.println("second player");
-                    message = "Congratulations! You won!" + " Number of shots: ";// + shooting.shotCount;
-                }
-                if (winner.equals("first")) {
-                    System.out.println("first player");
-                    message = "You lost! Number of shots: ";// + shooting.shotCount;
-                }
-            }
-        }
 
         Main.gameSpaceUI.endGame(message);
         GameController.inGame = false;

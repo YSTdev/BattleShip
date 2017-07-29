@@ -331,12 +331,16 @@ public class Shooting {
 
         Cell cell = new Cell();
 
-        if (queue == "first") {
+        if (GameController.mode.equals("viaNet")) {
+
+            if (queue == "first") {
+                cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
+            }
+            if (queue == "second") {
+                cell = GameController.firstPlayerBoard.getCell(cCol, cRow);
+            }
+        } else
             cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
-        }
-        if (queue == "second") {
-            cell = GameController.firstPlayerBoard.getCell(cCol, cRow);
-        }
         shotCount++;
 
         if ((!cell.marked) && (!cell.checked)) {
@@ -348,15 +352,20 @@ public class Shooting {
                 if (cell.ship.shipCells.isEmpty()) {
 
 
-                    if (queue == "first") {
+                    if (GameController.mode.equals("viaNet")) {
+                        if (queue == "first") {
+                            killedShipsCountUser++;
+                            System.out.println(killedShipsCountUser);
+                            opShipsAlive[cell.ship.shipSize - 1]--;
+                        }
+                        if (queue == "second") {
+                            killedShipsCount++;
+                            System.out.println(killedShipsCount);
+                            myShipsAlive[cell.ship.shipSize - 1]--;
+                        }
+                    } else {
                         killedShipsCountUser++;
-                        System.out.println(killedShipsCountUser);
                         opShipsAlive[cell.ship.shipSize - 1]--;
-                    }
-                    if (queue == "second") {
-                        killedShipsCount++;
-                        System.out.println(killedShipsCount);
-                        myShipsAlive[cell.ship.shipSize - 1]--;
                     }
                 }
             } else

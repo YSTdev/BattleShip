@@ -49,21 +49,9 @@ public class GameSpaceUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == timer) {
             if (GameController.inGame)
-                repaint();// this will call at every 1 second
-
-            /**    if (GameController.inGame){
-             checkEndGame();
-             }
-             */
+                repaint();// this will call at every 0.5 second
         }
     }
-
-
-    //private String mode;
-    //private String status;
-
-    // private Image[] img;
-    //private JLabel label;
 
     public GameSpaceUI(JLabel statusbar) {
         //img = (new ImageIcon("D:\\BURN\\Учеба (МИЭМ)\\JavaLearn\\Project\\BattleShip\\src\\game\\2.jpg")).getImage();
@@ -99,7 +87,7 @@ public class GameSpaceUI extends JPanel implements ActionListener {
 
     public class ShotListener extends MouseAdapter {
         public void mousePressed(MouseEvent e) {
-            System.out.println(GameController.mode);
+
             int x = e.getX();
             int y = e.getY();
 
@@ -116,16 +104,17 @@ public class GameSpaceUI extends JPanel implements ActionListener {
                         }
                     } else {
                         //Выстрел игрока
-                        /** if ((GameController.mode == "computer")) {
-                         boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow);
-                         GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
-                         //Ответный выстрел по полю пользователя
-                         if (successfulShot) {
-                         GameController.shooting.makeShoot(GameController.firstPlayerBoard);
-                         GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
-                         statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
-                         }
-                         }*/
+                        if ((GameController.mode == "computer")) {
+                            boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, "first");
+                            GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
+                            //Ответный выстрел по полю пользователя
+
+                            if (successfulShot) {
+                                GameController.shooting.makeShoot(GameController.firstPlayerBoard);
+                                GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
+                                statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                            }
+                        }
                         if ((GameController.mode == "viaNet")) {
                             if (GameController.status == "server") {
                                 if (GameController.queue == "first") {
