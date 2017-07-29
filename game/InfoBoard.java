@@ -2,8 +2,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * Created by Zhenya on 20.07.2017.
@@ -25,19 +23,29 @@ public class InfoBoard extends JPanel {
         setLabels();
     }
 
-    public  void setLabels() {
+    public void setLabels() {
 
         for (int i = 0; i < 4; i++) {
             labels[i].setText((i + 1) + " x ");
         }
     }
 
-    public  void changeLabels(){
+    public void changeLabels() {
 
         for (int i = 0; i < 4; i++) {
-            labels[i].setText(GameController.shooting.shipsAlive[3 - i] + " x ");
+            labels[i].setText(GameController.shooting.opShipsAlive[3 - i] + " x ");
         }
 
+    }
+
+    public String createData() {
+        String data = new String("");
+
+        for (int i = 0; i < 4; i++) {
+            data += GameController.shooting.myShipsAlive[i];
+        }
+
+        return data;
     }
 
     public void paintComponent(Graphics g) {

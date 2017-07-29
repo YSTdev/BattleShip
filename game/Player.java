@@ -15,7 +15,7 @@ public class Player {
     private String myBoardData;
     private String opBoardData;
 
-    public Player(GameBoard myGameBoard, GameBoard opponentGameBoard, String myBoardData, String opBoardData){
+    public Player(GameBoard myGameBoard, GameBoard opponentGameBoard, String myBoardData, String opBoardData) {
 
         this.myBoardData = myBoardData;
         this.opBoardData = opBoardData;

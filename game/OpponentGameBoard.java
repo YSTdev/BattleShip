@@ -39,7 +39,7 @@ public class OpponentGameBoard extends JPanel {
 
         if (GameController.inGame) {
 
-            for (int x = 0; x < GameController.BOARD_SIZE; x++){
+            for (int x = 0; x < GameController.BOARD_SIZE; x++) {
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
 
                     char cell = GameController.opBoardData.charAt(x * GameController.BOARD_SIZE + y);
@@ -59,58 +59,57 @@ public class OpponentGameBoard extends JPanel {
 
 
                     /**
-                    for (int x = 0; x < GameController.BOARD_SIZE; x++)
-                        for (int y = 0; y < GameController.BOARD_SIZE; y++) {
-                            Cell cell = Player.opponentGameBoard.getCell(x, y);
+                     for (int x = 0; x < GameController.BOARD_SIZE; x++)
+                     for (int y = 0; y < GameController.BOARD_SIZE; y++) {
+                     Cell cell = Player.opponentGameBoard.getCell(x, y);
 
-                            if (cell.checked){
-                                if (cell.killed){
-                                    if (!cell.ship.shipCells.isEmpty()){
-                                            g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                                    }
-                                    else
-                                        g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                                }
-                                else
-                                    g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            }
-                            else
-                                g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     if (cell.checked){
+                     if (cell.killed){
+                     if (!cell.ship.shipCells.isEmpty()){
+                     g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     else
+                     g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     else
+                     g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     else
+                     g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
 
-                            if (cell.marked)
-                                g.drawImage(img[MARKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     if (cell.marked)
+                     g.drawImage(img[MARKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
 
 
-                            /**
-                            if (cell.killed)
-                                g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            else if (cell.checked)
-                                g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            else
-                                g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            /**
-                            if (cell.ship!=null){
-                                if (!cell.ship.shipCells.isEmpty()) {
-                                    if (cell.killed)
-                                        g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                                    else if (cell.occupied)
-                                        g.drawImage(img[SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                                }
-                                else
-                                    g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            }
-                            else {
-                                if (cell.checked)
-                                    g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                                else
-                                    g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                            }
-                             */
+                     /**
+                     if (cell.killed)
+                     g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     else if (cell.checked)
+                     g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     else
+                     g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     /**
+                     if (cell.ship!=null){
+                     if (!cell.ship.shipCells.isEmpty()) {
+                     if (cell.killed)
+                     g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     else if (cell.occupied)
+                     g.drawImage(img[SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     else
+                     g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     else {
+                     if (cell.checked)
+                     g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     else
+                     g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                     }
+                     */
 
                 }
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < GameController.BOARD_SIZE; i++)
                 for (int j = 0; j < GameController.BOARD_SIZE; j++) {
                     g.drawImage(img[EMPTY_CELL], i * GameSpaceUI.CELL_SIZE, j * GameSpaceUI.CELL_SIZE, null);

@@ -151,22 +151,19 @@ public class GameBoard {
                 cell = gameBoard.getCell(x, y);
 
 
-                if (cell.checked){
-                    if (cell.killed){
-                        if (!cell.ship.shipCells.isEmpty()){
-                            boardData +="k";
-                        }
-                        else
-                            boardData +="d";
-                    }
-                    else
-                        boardData +="c";
-                }
-                else
-                    boardData +="e";
+                if (cell.checked) {
+                    if (cell.killed) {
+                        if (!cell.ship.shipCells.isEmpty()) {
+                            boardData += "k";
+                        } else
+                            boardData += "d";
+                    } else
+                        boardData += "c";
+                } else
+                    boardData += "e";
 
                 if (cell.marked)
-                    boardData +="m";
+                    boardData += "m";
 
 
 /**

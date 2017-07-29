@@ -20,38 +20,41 @@ public class GameSpaceUI extends JPanel implements ActionListener {
 
     Timer timer = new Timer(500, this);
 
-    public void endGame() {
+    public void endGame(String message) {
+        this.repaint();
         statusbar.setText("End");
-        GameController.inGame = false;
+        infoBoard.setLabels();
         //endGame("");
+        System.out.println(GameController.status);
+        System.out.println(message);
 
-        if (GameController.status == "server"){
-            GameController.gameServer.sendData("E" + GameController.winner);
+        if (!message.isEmpty()) {
+            JOptionPane.showMessageDialog(GameSpaceUI.this,
+                    message,
+                    "End of game!",
+                    JOptionPane.WARNING_MESSAGE);
         }
+    }
 
-        JOptionPane.showMessageDialog(GameSpaceUI.this,
-                GameController.winner,
-                "End of game!",
-                JOptionPane.WARNING_MESSAGE);
-    }
-/**
-    public void clientEndGame(){
-        statusbar.setText("End");
-        //endGame("");
-        JOptionPane.showMessageDialog(GameSpaceUI.this,
-                GameController.winner,
-                "End of game!",
-                JOptionPane.WARNING_MESSAGE);
-    }
-*/
+    /**
+     * public void clientEndGame(){
+     * statusbar.setText("End");
+     * //endGame("");
+     * JOptionPane.showMessageDialog(GameSpaceUI.this,
+     * GameController.winner,
+     * "End of game!",
+     * JOptionPane.WARNING_MESSAGE);
+     * }
+     */
     public void actionPerformed(ActionEvent ev) {
         if (ev.getSource() == timer) {
-            repaint();// this will call at every 1 second
+            if (GameController.inGame)
+                repaint();// this will call at every 1 second
 
-        /**    if (GameController.inGame){
-                checkEndGame();
-            }
-         */
+            /**    if (GameController.inGame){
+             checkEndGame();
+             }
+             */
         }
     }
 
@@ -125,7 +128,7 @@ public class GameSpaceUI extends JPanel implements ActionListener {
                          }*/
                         if ((GameController.mode == "viaNet")) {
                             if (GameController.status == "server") {
-                                if (GameController.queue == "first"){
+                                if (GameController.queue == "first") {
                                     boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, GameController.queue);
 
                                     if (successfulShot) {
@@ -133,7 +136,9 @@ public class GameSpaceUI extends JPanel implements ActionListener {
                                         GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
                                         GameController.gameServer.sendData('M' + GameBoard.makeMyBoardData(GameController.secondPlayerBoard));
                                         GameController.gameServer.sendData('O' + GameBoard.changeBoardData(GameController.firstPlayerBoard));
+
                                         GameController.queue = "second";
+                                        statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
                                     }
                                 }
 
@@ -144,7 +149,6 @@ public class GameSpaceUI extends JPanel implements ActionListener {
                                 //TODO: получить координаты выстрела
                                 //TODO: обработать результаты выстрела и вернуть клиенту новые данные о полях
                                 //  }
-                                checkEndGame();
                             }
 
                             if (GameController.status == "client") {
@@ -159,37 +163,30 @@ public class GameSpaceUI extends JPanel implements ActionListener {
 
                         }
                     }
+
+                    opponentGameBoard.repaint();
+                    myGameBoard.repaint();
+
+                    infoBoard.changeLabels();
+                    //InfoBoard.changeLabels();
                 }
-                opponentGameBoard.repaint();
-                myGameBoard.repaint();
+                /** if ((GameController.winner != null)) {
+                 //if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)) {
+                 statusbar.setText("End");
 
-                infoBoard.changeLabels();
-                //InfoBoard.changeLabels();
-
-               /** if ((GameController.winner != null)) {
-                    //if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)) {
-                    statusbar.setText("End");
-
-                    //String winner = GameController.endGame();
-                    //endGame("");
-                    JOptionPane.showMessageDialog(GameSpaceUI.this,
-                            GameController.winner,
-                            "End of game!",
-                            JOptionPane.WARNING_MESSAGE);
-                }*/
+                 //String winner = GameController.endGame();
+                 //endGame("");
+                 JOptionPane.showMessageDialog(GameSpaceUI.this,
+                 GameController.winner,
+                 "End of game!",
+                 JOptionPane.WARNING_MESSAGE);
+                 }*/
 
             }
 
         }
     }
 
-    public void checkEndGame(){
-        //GameController.endGame();
-        if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)){
-            statusbar.setText("End");
-            endGame();
-        }
-    }
 
     /**
      * public GameSpaceUI() {

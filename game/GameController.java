@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,51 +29,52 @@ public class GameController {
 
     public static String level;
     public static String mode;
-    public static String status;
+    public static String status = "server";
     public static String queue = "first";
     public static String winner = "";
     public static boolean inGame = false;
 
     private GameLogic gameLogic = new GameLogic();
-/**
-    // private List<Cell> list = new ArrayList<>();
-    private List<EndGameListener> listeners = new ArrayList<EndGameListener>();
 
-    public void addListener(EndGameListener toAdd) {
-        listeners.add(toAdd);
-    }
-
-
-    public boolean checkEndGame(){
-        if (shooting.killedShipsCount == MAX_SHIPS) {
-            winner = "You lost! Number of shots: " + shooting.shotCount;
-            endGame();
-            return true;
-        }
-        if (shooting.killedShipsCountUser == MAX_SHIPS) {
-            winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
-            endGame();
-            return true;
-        }
-        return false;
-    }
-
-    public void endGame() {
-        System.out.println("End Game!!!");
-
-        if (status == "server") {
-            gameServer.sendData("E" + winner);
-        }
-        // Notify everybody that may be interested.
-        for (EndGameListener hl : listeners)
-            hl.endGame();
-    }
-
-    public GameController(){
-        this.addListener(gameClient);
-    }
-*/
-    public GameController(GameSpaceUI gameSpaceUI){
+    /**
+     * // private List<Cell> list = new ArrayList<>();
+     * private List<EndGameListener> listeners = new ArrayList<EndGameListener>();
+     * <p/>
+     * public void addListener(EndGameListener toAdd) {
+     * listeners.add(toAdd);
+     * }
+     * <p/>
+     * <p/>
+     * public boolean checkEndGame(){
+     * if (shooting.killedShipsCount == MAX_SHIPS) {
+     * winner = "You lost! Number of shots: " + shooting.shotCount;
+     * endGame();
+     * return true;
+     * }
+     * if (shooting.killedShipsCountUser == MAX_SHIPS) {
+     * winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
+     * endGame();
+     * return true;
+     * }
+     * return false;
+     * }
+     * <p/>
+     * public void endGame() {
+     * System.out.println("End Game!!!");
+     * <p/>
+     * if (status == "server") {
+     * gameServer.sendData("E" + winner);
+     * }
+     * // Notify everybody that may be interested.
+     * for (EndGameListener hl : listeners)
+     * hl.endGame();
+     * }
+     * <p/>
+     * public GameController(){
+     * this.addListener(gameClient);
+     * }
+     */
+    public GameController(GameSpaceUI gameSpaceUI) {
     }
 
     public void startGame(String level, String mode, String status) {
@@ -81,7 +83,11 @@ public class GameController {
         this.level = level;
         this.status = status;
 
-        if (this.mode == "computer") {
+        System.out.println(GameController.status);
+        System.out.println(GameController.mode);
+        System.out.println(GameController.level);
+
+        if (this.mode.equals("computer")) {
 
             System.out.println("computer mode");
             //»нициализаци€ игровых полей
@@ -107,11 +113,11 @@ public class GameController {
         }
 
         //TODO: начало сетевой игры
-        if (this.mode == "viaNet") {
+        if (this.mode.equals("viaNet")) {
             shooting = new Shooting(firstPlayerBoard);
             System.out.println("viaNet mode");
 
-            if (this.status == "server") {
+            if (this.status.equals("server")) {
                 System.out.println("viaNet server mode");
                 for (int i = 0; i < 100; i++) {
                     firstPlayerBoard = initGameBoard(firstPlayerBoard);
@@ -129,7 +135,7 @@ public class GameController {
                 //secondPlayer = new Player(secondPlayerBoard, firstPlayerBoard);
             }
 
-            if (status == "client") {/**
+            if (status.equals("client")) {/**
              System.out.println("starting client");
              //gameClient = new GameClient();
              gameClient.setUpNetworking();
@@ -308,20 +314,47 @@ public class GameController {
         }
         return gameBoard;
     }
-/**
-    static public void endGame() {
 
-        if (shooting.killedShipsCount == MAX_SHIPS) {
-            winner = "You lost! Number of shots: " + shooting.shotCount;
-        }
-        if (shooting.killedShipsCountUser == MAX_SHIPS) {
-            winner = "Congratulations! You won!" + "\n" + "Number of shots: " + shooting.shotCount;
+    static public String endGame() {
+
+        String message = new String();
+
+        if (status.equals("server")) {
+            System.out.println("In server option");
+            if (winner.isEmpty()) {
+                message = "Game was stopped!";
+            } else {
+                gameServer.sendData("E" + winner);
+                if (winner.equals("first")) {
+                    message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
+                }
+                if (winner.equals("second")) {
+                    message = "You lost! Number of shots: " + shooting.shotCount;
+                }
+            }
         }
 
-        if (status == "server") {
-            gameServer.sendData("E" + winner);
+        if (status.equals("client")) {
+
+            if (winner.isEmpty()) {
+                message = "Game was stopped!";
+            } else {
+                if (winner.equals("second")) {
+                    System.out.println("second player");
+                    message = "Congratulations! You won!" + " Number of shots: ";// + shooting.shotCount;
+                }
+                if (winner.equals("first")) {
+                    System.out.println("first player");
+                    message = "You lost! Number of shots: ";// + shooting.shotCount;
+                }
+            }
         }
 
+        Main.gameSpaceUI.endGame(message);
+        GameController.inGame = false;
+        GameController.myBoardData = null;
+        GameController.opBoardData = null;
+        return message;
     }
-*/
+
 }

@@ -17,24 +17,24 @@ public class Shooting {
     public int killedShipsCount = 0; // Счетчик разбитых кораблей, для определения конца игры
     public int killedShipsCountUser = 0;
     public int shotCount = 0;
-    public int[] shipsAlive;
     public int[] opShipsAlive;
+    public int[] myShipsAlive;
     //public int opponentCount = 0;
 
     public Shooting(GameBoard gameBoard) {
         this.unchecked_cells = new ArrayList<>(gameBoard.getBoardSize() * gameBoard.getBoardSize());
 
-        shipsAlive = new int[4];
-        shipsAlive[0]=4;
-        shipsAlive[1]=3;
-        shipsAlive[2]=2;
-        shipsAlive[3]=1;
-
         opShipsAlive = new int[4];
-        opShipsAlive[0]=4;
-        opShipsAlive[1]=3;
-        opShipsAlive[2]=2;
-        opShipsAlive[3]=1;
+        opShipsAlive[0] = 4;
+        opShipsAlive[1] = 3;
+        opShipsAlive[2] = 2;
+        opShipsAlive[3] = 1;
+
+        myShipsAlive = new int[4];
+        myShipsAlive[0] = 4;
+        myShipsAlive[1] = 3;
+        myShipsAlive[2] = 2;
+        myShipsAlive[3] = 1;
 
 
         for (int y = 0; y < gameBoard.getBoardSize(); y++) {                //Копируем все ячейки из gameBoard в непровернные
@@ -46,7 +46,7 @@ public class Shooting {
     }
 
     /**
-     *   Возвращает список непроверенных ячеек
+     * Возвращает список непроверенных ячеек
      */
     public List<Cell> getUncheckedCells() {
         return this.unchecked_cells;
@@ -327,19 +327,19 @@ public class Shooting {
         }
     }
 
-    public boolean makeUserShot(int cCol, int cRow, String queue){
+    public boolean makeUserShot(int cCol, int cRow, String queue) {
 
         Cell cell = new Cell();
 
-        if (queue == "first"){
+        if (queue == "first") {
             cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
         }
-        if (queue == "second"){
+        if (queue == "second") {
             cell = GameController.firstPlayerBoard.getCell(cCol, cRow);
         }
         shotCount++;
 
-        if ((!cell.marked)&&(!cell.checked)) {
+        if ((!cell.marked) && (!cell.checked)) {
             if (cell.occupied) {
                 cell.checked = true;
                 cell.killed = true;
@@ -348,32 +348,48 @@ public class Shooting {
                 if (cell.ship.shipCells.isEmpty()) {
 
 
-                        if (queue =="first"){
-                            killedShipsCountUser++;
-                            System.out.println(killedShipsCountUser);
-                            shipsAlive[cell.ship.shipSize-1]--;
-                        }
-                        if (queue == "second"){
-                            killedShipsCount++;
-                            System.out.println(killedShipsCount);
-                            opShipsAlive[cell.ship.shipSize-1]--;
-                        }
+                    if (queue == "first") {
+                        killedShipsCountUser++;
+                        System.out.println(killedShipsCountUser);
+                        opShipsAlive[cell.ship.shipSize - 1]--;
+                    }
+                    if (queue == "second") {
+                        killedShipsCount++;
+                        System.out.println(killedShipsCount);
+                        myShipsAlive[cell.ship.shipSize - 1]--;
+                    }
                 }
             } else
                 cell.checked = true;
+            checkEndGame();
             return true;
         }
         return false;
     }
 
-    public void markCell(int cCol, int cRow){
-        Cell cell = GameController.secondPlayerBoard.getCell(cCol,cRow);
-        if (!cell.checked){
+    public void markCell(int cCol, int cRow) {
+        Cell cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
+        if (!cell.checked) {
             if (!cell.marked)
                 cell.marked = true;
             else
                 cell.marked = false;
         }
+    }
+
+    public void checkEndGame() {
+        //GameController.endGame();
+        //  if ((GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) || (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS)){
+
+        if (GameController.shooting.killedShipsCount == GameController.MAX_SHIPS) {
+            GameController.winner = "second";
+            GameController.endGame();
+        }
+        if (GameController.shooting.killedShipsCountUser == GameController.MAX_SHIPS) {
+            GameController.winner = "first";
+            GameController.endGame();
+        }
+
     }
 
 }

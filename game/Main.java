@@ -15,9 +15,10 @@ public class Main extends JFrame {
     //private String mode = "computer";
     private JLabel statusbar;
     public static GameSpaceUI gameSpaceUI;
-    private NetModeFrame netModeFrame;
+    public static NetModeFrame netModeFrame;
     //public static boolean inGame = false;
-    public GameController gameController;
+    public static GameController gameController;
+    public static JRadioButtonMenuItem computer;
 
     //static public Shooting shooting;
 
@@ -56,8 +57,8 @@ public class Main extends JFrame {
         //настройка основного фрейма
         setTitle("BattleShip");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         setSize(MAX_WIDTH, MAX_HEIGHT);
+        setLocationRelativeTo(null);
         /**pack();*/
     }
 
@@ -103,21 +104,8 @@ public class Main extends JFrame {
         newgame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-
-                gameController = new GameController(gameSpaceUI);
-                //Статус "In game"
+                start();
                 statusbar.setText("In Game");
-
-                gameController.inGame = true;
-
-                //InfoBoard.setLabels();
-                gameSpaceUI.infoBoard.setLabels();
-
-
-                //mode = NetModeFrame.mode;
-                gameController.startGame(GameController.level, GameController.mode, GameController.status);
-                gameSpaceUI.repaint();
-
                 //gameController.addListener(gameSpaceUI);
             }
         });
@@ -131,7 +119,6 @@ public class Main extends JFrame {
         });
         return game;
     }
-
 
     private JMenu optionsGameMenu() {
 
@@ -153,7 +140,7 @@ public class Main extends JFrame {
         //options.addSeparator();
 
         JMenu gameMode = new JMenu("Mode");
-        JRadioButtonMenuItem computer = new JRadioButtonMenuItem("Single player");
+        computer = new JRadioButtonMenuItem("Single player");
         JRadioButtonMenuItem viaNet = new JRadioButtonMenuItem("Two players");
         computer.setSelected(true);
 
@@ -194,15 +181,46 @@ public class Main extends JFrame {
         viaNet.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                //TODO: новая форма для создания сетевой игры
                 netModeFrame = new NetModeFrame();
                 netModeFrame.setVisible(true);
+
+
             }
         });
 
         return options;
     }
 
+    public static void start() {
+
+        if ((GameController.inGame) && (GameController.status.equals("client"))) {
+            int a = JOptionPane.showConfirmDialog(Main.netModeFrame, "You are already playing. Stop this game?");
+            if (a == JOptionPane.YES_OPTION) {
+                GameController.gameClient.sendData("E");
+                GameController.endGame();
+            }
+        } else {
+            if ((GameController.myBoardData == null || GameController.opBoardData == null) && (GameController.status.equals("client"))) {
+                JOptionPane.showMessageDialog(Main.netModeFrame, "Server have't start any game yet");
+            } else {
+                gameController = new GameController(gameSpaceUI);
+                //Статус "In game"
+
+                gameController.inGame = true;
+
+                //InfoBoard.setLabels();
+                gameSpaceUI.infoBoard.setLabels();
+
+                //mode = NetModeFrame.mode;
+                gameController.startGame(GameController.level, GameController.mode, GameController.status);
+                if ((GameController.mode.equals("viaNet")) && (GameController.status.equals("server")))
+                    GameController.gameServer.sendData("S");
+
+                gameSpaceUI.repaint();
+            }
+
+        }
+    }
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {

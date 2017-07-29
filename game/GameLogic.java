@@ -22,7 +22,7 @@ public class GameLogic {
      * Создает позиции для корабля
      */
     private List<Cell> getShipLocation(GameBoard gameBoard, int shipSize) {
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
 
         List<Cell> shipCells = new ArrayList<>();
         for (int i = 0; i <= 300; i++) {
