@@ -193,6 +193,7 @@ public class Main extends JFrame {
 
     public static void start() {
 
+
         if ((GameController.inGame) && (GameController.status.equals("client"))) {
             int a = JOptionPane.showConfirmDialog(Main.netModeFrame, "You are already playing. Stop this game?");
             if (a == JOptionPane.YES_OPTION) {
@@ -203,7 +204,8 @@ public class Main extends JFrame {
             if ((GameController.myBoardData == null || GameController.opBoardData == null) && (GameController.status.equals("client"))) {
                 JOptionPane.showMessageDialog(Main.netModeFrame, "Server have't start any game yet");
             } else {
-                gameController = new GameController(gameSpaceUI);
+                gameController = new GameController();
+                //gameController = new GameController();
                 //Статус "In game"
 
                 gameController.inGame = true;

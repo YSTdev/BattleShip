@@ -99,35 +99,46 @@ public class GameSpaceUI extends JPanel implements ActionListener {
 
                     if (e.isMetaDown()) {
                         //System.out.print("Right click!");
-                        if ((GameController.mode == "computer")) {
-                            GameController.shooting.markCell(cCol, cRow);
+                        if (GameController.mode.equals("computer")) {
+                            //GameController.shooting.markCell(cCol, cRow);
+                            GameController.shooting.markCells(cCol * GameController.BOARD_SIZE + cRow);
+                        }
+                        System.out.println(GameController.shooting.markedCells);
+                        if (GameController.mode.equals("viaNet")) {
+                            GameController.shooting.markCells(cCol * GameController.BOARD_SIZE + cRow);
                         }
                     } else {
                         //Выстрел игрока
                         if ((GameController.mode == "computer")) {
-                            boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, "first");
-                            GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
-                            //Ответный выстрел по полю пользователя
+                            if (GameController.shooting.checkShot(cCol*GameController.BOARD_SIZE + cRow)){
+                                boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, "first");
+                                GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
+                                //Ответный выстрел по полю пользователя
 
-                            if (successfulShot) {
-                                GameController.shooting.makeShoot(GameController.firstPlayerBoard);
-                                GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
-                                statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                                if (successfulShot) {
+                                    GameController.shooting.makeShoot(GameController.firstPlayerBoard);
+                                    GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
+                                    statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                                }
                             }
                         }
                         if ((GameController.mode == "viaNet")) {
                             if (GameController.status == "server") {
                                 if (GameController.queue == "first") {
-                                    boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, GameController.queue);
 
-                                    if (successfulShot) {
-                                        GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
-                                        GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
-                                        GameController.gameServer.sendData('M' + GameBoard.makeMyBoardData(GameController.secondPlayerBoard));
-                                        GameController.gameServer.sendData('O' + GameBoard.changeBoardData(GameController.firstPlayerBoard));
+                                    if (GameController.shooting.checkShot(cCol*GameController.BOARD_SIZE + cRow)){
+                                        boolean successfulShot = GameController.shooting.makeUserShot(cCol, cRow, GameController.queue);
 
-                                        GameController.queue = "second";
-                                        statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                                        if (successfulShot) {
+                                            GameController.myBoardData = GameBoard.makeMyBoardData(GameController.firstPlayerBoard);
+                                            GameController.opBoardData = GameBoard.changeBoardData(GameController.secondPlayerBoard);
+                                            GameController.gameServer.sendData('M' + GameBoard.makeMyBoardData(GameController.secondPlayerBoard));
+                                            GameController.gameServer.sendData('O' + GameBoard.changeBoardData(GameController.firstPlayerBoard));
+
+                                            GameController.shooting.shotCount++;
+                                            GameController.queue = "second";
+                                            statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                                        }
                                     }
                                 }
 
@@ -143,8 +154,11 @@ public class GameSpaceUI extends JPanel implements ActionListener {
                             if (GameController.status == "client") {
                                 //GameController.gameClient.startReading();
                                 //GameController.gameClient.sendData("\n New Data ...");
-                                GameController.gameClient.sendData("S" + cCol + cRow);
-
+                                if (GameController.shooting.checkShot(cCol*GameController.BOARD_SIZE + cRow)){
+                                    GameController.gameClient.sendData("S" + cCol + cRow);
+                                    GameController.shooting.shotCount++;
+                                    statusbar.setText("Number of shots: " + GameController.shooting.shotCount);
+                                }
                                 //TODO: получить строки с информацией о своем и чужом полях
                                 //TODO: отправить координаты выстрела клиента и обработать
                                 //TODO: получить новые данные о полях

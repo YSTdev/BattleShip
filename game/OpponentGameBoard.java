@@ -42,21 +42,26 @@ public class OpponentGameBoard extends JPanel {
             for (int x = 0; x < GameController.BOARD_SIZE; x++) {
                 for (int y = 0; y < GameController.BOARD_SIZE; y++) {
 
-                    char cell = GameController.opBoardData.charAt(x * GameController.BOARD_SIZE + y);
-
-                    if (cell == 's')
-                        g.drawImage(img[SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                    if (cell == 'e')
-                        g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                    if (cell == 'c')
-                        g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                    if (cell == 'k')
-                        g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                    if (cell == 'd')
-                        g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
-                    if (cell == 'm')
+                    if (GameController.shooting.markedCells.charAt(x * GameController.BOARD_SIZE + y)=='m'){
                         g.drawImage(img[MARKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                    }
+                    else {
 
+                        char cell = GameController.opBoardData.charAt(x * GameController.BOARD_SIZE + y);
+
+                        if (cell == 's')
+                            g.drawImage(img[SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                        if (cell == 'e')
+                            g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                        if (cell == 'c')
+                            g.drawImage(img[CHECKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                        if (cell == 'k')
+                            g.drawImage(img[KILLED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                        if (cell == 'd')
+                            g.drawImage(img[KILLED_SHIP_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                        //if (cell == 'm')
+                        //   g.drawImage(img[MARKED_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
+                    }
 
                     /**
                      for (int x = 0; x < GameController.BOARD_SIZE; x++)
@@ -106,10 +111,9 @@ public class OpponentGameBoard extends JPanel {
                      g.drawImage(img[EMPTY_CELL], x * GameSpaceUI.CELL_SIZE, y * GameSpaceUI.CELL_SIZE, null);
                      }
                      */
-
                 }
             }
-        } else {
+        }else {
             for (int i = 0; i < GameController.BOARD_SIZE; i++)
                 for (int j = 0; j < GameController.BOARD_SIZE; j++) {
                     g.drawImage(img[EMPTY_CELL], i * GameSpaceUI.CELL_SIZE, j * GameSpaceUI.CELL_SIZE, null);

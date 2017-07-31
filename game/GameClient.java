@@ -86,7 +86,14 @@ public class GameClient {
 
                     if (message.charAt(0) == 'O') {
                         GameController.opBoardData = message.substring(1);
+                        System.out.println(GameController.opBoardData);
                         System.out.println("Read opData: " + message);
+                    }
+
+                    if (message.charAt(0) == 'C'){
+                        GameController.shooting.shotCount = Integer.parseInt(message.substring(1));
+                        //GameController.shooting.shotCount = Character.getNumericValue(message.charAt(0))*100
+                        System.out.println(GameController.shooting.shotCount);
                     }
 
                     if (message.charAt(0) == 'G') {

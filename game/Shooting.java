@@ -16,13 +16,17 @@ public class Shooting {
     private Cell firstShot = null; // ’ранит ссылку на €чейку, котора€ была ранена первой
     public int killedShipsCount = 0; // —четчик разбитых кораблей, дл€ определени€ конца игры
     public int killedShipsCountUser = 0;
-    public int shotCount = 0;
+    public static int shotCount = 0;
     public int[] opShipsAlive;
     public int[] myShipsAlive;
+    public String markedCells="0";
     //public int opponentCount = 0;
 
     public Shooting(GameBoard gameBoard) {
         this.unchecked_cells = new ArrayList<>(gameBoard.getBoardSize() * gameBoard.getBoardSize());
+
+        for (int i = 0; i < GameController.BOARD_SIZE * GameController.BOARD_SIZE; i++)
+            markedCells += "0";
 
         opShipsAlive = new int[4];
         opShipsAlive[0] = 4;
@@ -341,7 +345,6 @@ public class Shooting {
             }
         } else
             cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
-        shotCount++;
 
         if ((!cell.marked) && (!cell.checked)) {
             if (cell.occupied) {
@@ -350,8 +353,6 @@ public class Shooting {
                 cell.ship.shipCells.remove(cell);
 
                 if (cell.ship.shipCells.isEmpty()) {
-
-
                     if (GameController.mode.equals("viaNet")) {
                         if (queue == "first") {
                             killedShipsCountUser++;
@@ -377,6 +378,8 @@ public class Shooting {
     }
 
     public void markCell(int cCol, int cRow) {
+
+
         Cell cell = GameController.secondPlayerBoard.getCell(cCol, cRow);
         if (!cell.checked) {
             if (!cell.marked)
@@ -384,6 +387,23 @@ public class Shooting {
             else
                 cell.marked = false;
         }
+    }
+
+    public void markCells(int cell) {
+            if (markedCells.charAt(cell) != 'm') {
+                markedCells = markedCells.substring(0, cell) + 'm' + markedCells.substring(cell+1);
+            }
+            else if (markedCells.charAt(cell) == 'm') {
+                markedCells = markedCells.substring(0, cell) + '0' + markedCells.substring(cell+1);
+            }
+    }
+
+    public boolean checkShot(int cell){
+
+        if ((markedCells.charAt(cell)=='0')&&(GameController.opBoardData.charAt(cell)=='e'))
+            return true;
+        else
+            return false;
     }
 
     public void checkEndGame() {

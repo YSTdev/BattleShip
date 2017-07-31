@@ -72,7 +72,7 @@ public class GameController {
      * this.addListener(gameClient);
      * }
      */
-    public GameController(GameSpaceUI gameSpaceUI) {
+    public GameController() {
     }
 
     public void startGame(String level, String mode, String status) {
@@ -334,13 +334,14 @@ public class GameController {
                 if (winner.isEmpty()) {
                     message = "Game was stopped!";
                 } else {
-                    gameServer.sendData("E" + winner);
                     if (winner.equals("first")) {
                         message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
+                        gameServer.sendData("C" + shooting.shotCount);
                     }
                     if (winner.equals("second")) {
                         message = "You lost! Number of shots: " + shooting.shotCount;
                     }
+                    gameServer.sendData("E" + winner);
                 }
             }
 
@@ -351,11 +352,11 @@ public class GameController {
                 } else {
                     if (winner.equals("second")) {
                         System.out.println("second player");
-                        message = "Congratulations! You won!" + " Number of shots: ";// + shooting.shotCount;
+                        message = "Congratulations! You won!" + " Number of shots: " + shooting.shotCount;
                     }
                     if (winner.equals("first")) {
                         System.out.println("first player");
-                        message = "You lost! Number of shots: ";// + shooting.shotCount;
+                        message = "You lost! Number of shots: " + shooting.shotCount;
                     }
                 }
             }
@@ -364,6 +365,7 @@ public class GameController {
 
         Main.gameSpaceUI.endGame(message);
         GameController.inGame = false;
+        GameController.shooting.shotCount = 0;
         GameController.myBoardData = null;
         GameController.opBoardData = null;
         return message;
